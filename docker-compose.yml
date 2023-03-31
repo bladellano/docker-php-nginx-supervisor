@@ -1,0 +1,53 @@
+version: "2.2"
+services:
+
+  # App
+  web:
+    container_name: tehub-app
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    networks:
+      - backend
+    volumes:
+      - ./application:/var/www
+      - ./docker/nginx/sites:/etc/nginx/sites-available
+    ports:
+      - "8080:80" #http
+      - "443:443" #https
+    depends_on:
+      - redis
+      - mysql
+
+  # MySQL
+  mysql:
+    container_name: tehub-mysql
+    image: mysql:8.0.29-debian
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - MYSQL_VOLUME=/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_tehub
+    networks:
+      - backend
+    ports:
+      - 3307:3306
+  
+  # Redis
+  redis:
+    container_name: tehub-redis
+    image: redis:7-alpine
+    restart: always
+    networks:
+      - backend
+    ports:
+      - 6379:6379
+
+networks:
+  backend:
+
+volumes:
+  MYSQL_VOLUME:
+    driver: local
