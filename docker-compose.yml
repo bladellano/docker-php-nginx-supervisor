@@ -24,7 +24,6 @@ services:
     container_name: tehub-mysql
     image: mysql:8.0.29-debian
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
     volumes:
       - MYSQL_VOLUME=/var/lib/mysql
     environment:
@@ -39,7 +38,6 @@ services:
   redis:
     container_name: tehub-redis
     image: redis:7-alpine
-    restart: always
     networks:
       - backend
     ports:
